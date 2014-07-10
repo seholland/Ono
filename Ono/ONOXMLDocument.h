@@ -22,11 +22,36 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    ONO_XML_ELEMENT_NODE=		1,
+    ONO_XML_ATTRIBUTE_NODE=		2,
+    ONO_XML_TEXT_NODE=		3,
+    ONO_XML_CDATA_SECTION_NODE=	4,
+    ONO_XML_ENTITY_REF_NODE=	5,
+    ONO_XML_ENTITY_NODE=		6,
+    ONO_XML_PI_NODE=		7,
+    ONO_XML_COMMENT_NODE=		8,
+    ONO_XML_DOCUMENT_NODE=		9,
+    ONO_XML_DOCUMENT_TYPE_NODE=	10,
+    ONO_XML_DOCUMENT_FRAG_NODE=	11,
+    ONO_XML_NOTATION_NODE=		12,
+    ONO_XML_HTML_DOCUMENT_NODE=	13,
+    ONO_XML_DTD_NODE=		14,
+    ONO_XML_ELEMENT_DECL=		15,
+    ONO_XML_ATTRIBUTE_DECL=		16,
+    ONO_XML_ENTITY_DECL=		17,
+    ONO_XML_NAMESPACE_DECL=		18,
+    ONO_XML_XINCLUDE_START=		19,
+    ONO_XML_XINCLUDE_END=		20
+	,ONO_XML_DOCB_DOCUMENT_NODE=	21
+} OnoXmlElementType;
+
+
 @class ONOXMLElement;
 
 /**
  The `ONOSearching` protocol is adopted by `ONOXMLDocument` and `ONOXMLElement`, denoting that they can search for elements using XPath or CSS selectors.
-
+ 
  @see http://www.w3.org/TR/xpath/
  @see http://www.w3.org/TR/CSS21/selector.html
  */
@@ -56,9 +81,9 @@
  
  @param XPath The XPath selector
  @param block A block that is executed for each result. This block has no return value and takes three arguments:
-    element: The enumerated element.
-    idx: The index of the current item.
-    stop: The block can set the value to `YES` to stop further processing of the elements. The stop argument is an out-only argument. You should only ever set this BOOL to `YES` within the block.
+ element: The enumerated element.
+ idx: The index of the current item.
+ stop: The block can set the value to `YES` to stop further processing of the elements. The stop argument is an out-only argument. You should only ever set this BOOL to `YES` within the block.
  */
 - (void)enumerateElementsWithXPath:(NSString *)XPath
                         usingBlock:(void (^)(ONOXMLElement *element, NSUInteger idx, BOOL *stop))block;
@@ -78,9 +103,9 @@
 
 /**
  Returns the results for a CSS selector.
-
+ 
  @param CSS The CSS selector
-
+ 
  @return An enumerable collection of results.
  */
 - (id <NSFastEnumeration>)CSS:(NSString *)CSS;
@@ -96,9 +121,9 @@
  
  @param CSS The CSS selector
  @param block A block that is executed for each result. This block has no return value and takes three arguments:
-    element: the enumerated element.
-    idx: the index of the current item.
-    stop: the block can set the value to `YES` to stop further processing of the elements. The stop argument is an out-only argument. You should only ever set this BOOL to `YES` within the block.
+ element: the enumerated element.
+ idx: the index of the current item.
+ stop: the block can set the value to `YES` to stop further processing of the elements. The stop argument is an out-only argument. You should only ever set this BOOL to `YES` within the block.
  */
 - (void)enumerateElementsWithCSS:(NSString *)CSS
                       usingBlock:(void (^)(ONOXMLElement *element, NSUInteger idx, BOOL *stop))block;
@@ -180,10 +205,10 @@
 
 /**
  Creates and returns an instance of ONOXMLDocument from XML data.
-
+ 
  @param data The XML data.
  @param error The error error that occured while parsing the XML, or `nil`.
-
+ 
  @return An `ONOXMLDocument` with the contents of the specified XML data.
  */
 + (instancetype)XMLDocumentWithData:(NSData *)data
@@ -195,11 +220,11 @@
 
 /**
  Creates and returns an instance of ONOXMLDocument from an HTML string.
-
+ 
  @param string The HTML string.
  @param encoding The string encoding.
  @param error The error error that occured while parsing the HTML, or `nil`.
-
+ 
  @return An `ONOXMLDocument` with the contents of the specified HTML string.
  */
 + (instancetype)HTMLDocumentWithString:(NSString *)string
@@ -208,10 +233,10 @@
 
 /**
  Creates and returns an instance of ONOXMLDocument from HTML data.
-
+ 
  @param data The HTML string.
  @param error The error error that occured while parsing the HTML, or `nil`.
-
+ 
  @return An `ONOXMLDocument` with the contents of the specified HTML string.
  */
 + (instancetype)HTMLDocumentWithData:(NSData *)data
@@ -265,14 +290,19 @@
 
 /**
  Returns the value for an attribute in a particular namespace.
-
+ 
  @param attribute The attribute name.
  @param ns The attribute namespace.
-
+ 
  @return The associated value.
  */
 - (id)valueForAttribute:(NSString *)attribute
             inNamespace:(NSString *)ns;
+
+/**
+ The XML node type
+ */
+@property (readonly, nonatomic, assign) OnoXmlElementType type;
 
 ///----------------------------------------------------
 /// @name Accessing Parent, Child, and Sibling Elements
@@ -309,10 +339,10 @@
 
 /**
  Returns the first child element with a tag in a particular namespace, or `nil` if no such element exists.
-
+ 
  @param tag The tag name.
  @param ns The namespace.
-
+ 
  @return The child element.
  */
 - (ONOXMLElement *)firstChildWithTag:(NSString *)tag
@@ -320,19 +350,19 @@
 
 /**
  Returns all children elements with the specified tag.
-
+ 
  @param tag The tag name.
-
+ 
  @return The children elements.
  */
 - (NSArray *)childrenWithTag:(NSString *)tag;
 
 /**
  Returns all children elements with the specified tag.
-
+ 
  @param tag The tag name.
  @param ns The namepsace.
-
+ 
  @return The children elements.
  */
 - (NSArray *)childrenWithTag:(NSString *)tag
@@ -399,13 +429,13 @@
 
 /**
  ## Error Domains
-
+ 
  The following error domain is predefined.
-
+ 
  - `NSString * const ONOErrorDomain`
-
+ 
  ### Constants
-
+ 
  `ONOErrorDomain`
  Ono errors. Error codes for `ONOErrorDomain` are not currently defined.
  */
