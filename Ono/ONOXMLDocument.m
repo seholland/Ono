@@ -526,7 +526,7 @@ static BOOL ONOXMLNodeMatchesTagInNamespace(xmlNodePtr node, NSString *tag, NSSt
 
 -(OnoXmlElementType) type
 {
-	return self.xmlNode->type;
+	return (OnoXmlElementType)self.xmlNode->type;
 }
 
 #pragma mark -
